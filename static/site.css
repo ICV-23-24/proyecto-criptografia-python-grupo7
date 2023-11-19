@@ -10,32 +10,55 @@
     padding: 10px;
 }
 
+h1{
+    text-align: center;
+}
+
+h2{
+    text-align: center;
+}
+
+label{
+    background-color: red;
+    margin-left: 48%;
+    text-align: center;
+}
+
+input{
+    background-color: red;
+    margin-left: 48%;
+    text-align: center;
+}
+
 .navbar {
-    background: #333;
+    background: maroon;
     color: #fff;
     text-align: center;
-    padding: 10px;
+    padding: 15px;
 }
 
 .navbar a {
     color: #fff;
-    text-decoration: none;
-    padding: 10px 15px;
+    background: #555;
+    text-decoration: underline;
+    padding: 7px 30px;
 }
 
 .navbar a:hover {
-    background: #555;
+    background-color: maroon;
 }
 
 .body-content {
     padding: 20px;
+    background-color: goldenrod;
 }
 
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 10px;
     margin-top: 20px;
     border-top: 1px solid #ccc;
+    background-color: maroon;
 }
 
 .container {
@@ -46,7 +69,8 @@ footer {
 }
 
 .card {
-    border: 1px solid #ddd;
+    border: 1px solid black;
+    background-color: rgb(252, 222, 222);
     border-radius: 5px;
     padding: 20px;
     margin: 10px;

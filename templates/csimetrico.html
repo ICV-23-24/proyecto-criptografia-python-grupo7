@@ -3,13 +3,13 @@
 C. Simétrico
 {% endblock %}
 {% block content %}
-<h1>Encriptar y desencriptar mensaje con AES</h1>
+<h1>Esta es la seccion para encriptar y desencriptar con AES</h1>
 
-    <h2>Encriptar Mensaje</h2>
+    <h2>¿Que quieres encriptar?</h2>
     <form method="post">
         <label for="message">Mensaje:</label><br>
         <input type="text" id="message" name="message"><br><br>
-        <label for="key">Clave:</label><br>
+        <label for="key">Pulsame para generar la clave</label><br>
         <input type="text" id="key" name="key"><br><br>
         <input type="hidden" name="mode" value="encrypt">
         <input type="submit" value="Encriptar">
@@ -20,7 +20,7 @@ C. Simétrico
         <p>{{ encrypted_message }}</p>
     {% endif %}
 
-    <h2>Desencriptar Mensaje</h2>
+    <h2>¿Tienes algo para desencriptar?</h2>
     <form method="post">
         <label for="encrypted_message">Mensaje Encriptado:</label><br>
         <input type="text" id="encrypted_message" name="message"><br><br>
