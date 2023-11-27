@@ -3,35 +3,100 @@
 C. Simétrico
 {% endblock %}
 {% block content %}
-<h1>Esta es la seccion para encriptar y desencriptar con AES</h1>
 
-    <h2>¿Que quieres encriptar?</h2>
-    <form method="post">
-        <label for="message">Mensaje:</label><br>
-        <input type="text" id="message" name="message"><br><br>
-        <label for="key">Pulsame para generar la clave</label><br>
-        <input type="text" id="key" name="key"><br><br>
-        <input type="hidden" name="mode" value="encrypt">
-        <input type="submit" value="Encriptar">
-    </form>
+<h1>Esta es la sección para encriptar y desencriptar con AES</h1>
 
+<h2>¿Qué quieres encriptar?</h2>
+<h3>Pulsa el botón "Encriptar" para empezar el proceso</h3>
+
+<form id="encrypt-form" method="post" action="/csimetrico" enctype="multipart/form-data">
+    <input type="hidden" name="mode" value="encrypt">
+    <input type="file" name="file" accept=".txt">
+    <input type="submit" value="Encriptar">
+</form>
+
+<div id="encrypted-message-container">
     {% if encrypted_message %}
         <h2>Mensaje Encriptado:</h2>
         <p>{{ encrypted_message }}</p>
     {% endif %}
+</div>
 
-    <h2>¿Tienes algo para desencriptar?</h2>
-    <form method="post">
-        <label for="encrypted_message">Mensaje Encriptado:</label><br>
-        <input type="text" id="encrypted_message" name="message"><br><br>
-        <label for="key_decrypt">Clave:</label><br>
-        <input type="text" id="key_decrypt" name="key"><br><br>
-        <input type="hidden" name="mode" value="decrypt">
-        <input type="submit" value="Desencriptar">
-    </form>
+<h2>¿Tienes algo para desencriptar?</h2>
+<h3>Pulsa el botón "Desencriptar" para empezar el proceso</h3>
+<form id="decrypt-form" method="post" action="/csimetrico" enctype="multipart/form-data">
+    <input type="hidden" name="mode" value="decrypt">
+    <input type="file" name="file" accept=".txt">
+    <input type="submit" value="Desencriptar">
+</form>
 
+<div id="decrypted-message-container">
     {% if decrypted_message %}
         <h2>Mensaje:</h2>
         <p>{{ decrypted_message }}</p>
     {% endif %}
+</div>
+
+<script>
+    document.getElementById("encrypt-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("/csimetrico", {
+            method: "POST",
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Manejar la respuesta según sea necesario
+            console.log(data);
+
+            // Actualizar el contenedor del mensaje encriptado
+            const encryptedMessageContainer = document.getElementById("encrypted-message-container");
+            encryptedMessageContainer.innerHTML = '';
+            if (data.result === 'success') {
+                const h2 = document.createElement('h2');
+                h2.textContent = 'Mensaje Encriptado:';
+                const p = document.createElement('p');
+                p.textContent = data.message;
+                encryptedMessageContainer.appendChild(h2);
+                encryptedMessageContainer.appendChild(p);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+
+    document.getElementById("decrypt-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch("/csimetrico", {
+            method: "POST",
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Manejar la respuesta según sea necesario
+            console.log(data);
+
+            // Actualizar el contenedor del mensaje desencriptado
+            const decryptedMessageContainer = document.getElementById("decrypted-message-container");
+            decryptedMessageContainer.innerHTML = '';
+            if (data.result === 'success') {
+                const h2 = document.createElement('h2');
+                h2.textContent = 'Mensaje:';
+                const p = document.createElement('p');
+                p.textContent = data.message;
+                decryptedMessageContainer.appendChild(h2);
+                decryptedMessageContainer.appendChild(p);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+</script>
 {% endblock %}
+

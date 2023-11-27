@@ -9,6 +9,9 @@
     height: 60px;
     padding: 10px;
 }
+p{
+    text-align: center;
+}
 
 h1{
     text-align: center;
@@ -18,28 +21,32 @@ h2{
     text-align: center;
 }
 
+h3{
+    text-align: center;
+}
+
 label{
-    background-color: red;
     margin-left: 48%;
     text-align: center;
 }
 
 input{
     background-color: red;
-    margin-left: 48%;
-    text-align: center;
+    margin-left: 45%;
+    font-size: 20px;
+    padding: 20px 40px;
 }
 
 .navbar {
-    background: maroon;
+    background: grey;
     color: #fff;
     text-align: center;
     padding: 15px;
 }
 
 .navbar a {
-    color: #fff;
-    background: #555;
+    color: black;
+    background: red;
     text-decoration: underline;
     padding: 7px 30px;
 }
@@ -50,7 +57,11 @@ input{
 
 .body-content {
     padding: 20px;
-    background-color: goldenrod;
+    background: linear-gradient(yellow, red);
+    background-repeat: no-repeat;
+    height: 100%;
+    margin: 0;
+    background-attachment: fixed;
 }
 
 footer {
@@ -58,7 +69,7 @@ footer {
     padding: 10px;
     margin-top: 20px;
     border-top: 1px solid #ccc;
-    background-color: maroon;
+    background-color: #555;
 }
 
 .container {
