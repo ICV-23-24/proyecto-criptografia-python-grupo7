@@ -33,6 +33,16 @@ def save_to_file(data, file_path):
     with open(file_path, 'wb') as file:
         file.write(data)
 
+def generate_and_save_key(output_folder):
+    # Generar una clave aleatoria y guardarla en la carpeta seleccionada
+    key = generate_random_key()
+    key_file_path = os.path.join(output_folder, "clave.txt")
+    save_to_file(key.encode(), key_file_path)
+
+    print(f"La clave se ha guardado en {key_file_path}")
+
+    return key
+
 def encrypt_message(message, key, iv):
     cipher = Cipher(algorithms.AES(key.encode()), modes.CFB8(iv), backend=default_backend())
     encryptor = cipher.encryptor()
@@ -72,4 +82,8 @@ def open_directory_dialog(title):
     root = tk.Tk()
     root.withdraw()
     folder_path = filedialog.askdirectory(title=title)
+
+    # Generar y guardar la clave en la carpeta seleccionada
+    generate_and_save_key(folder_path)
+    
     return folder_path
