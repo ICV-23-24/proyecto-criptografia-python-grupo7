@@ -3,53 +3,65 @@
 C. Asimétrico
 {% endblock %}
 {% block content %}
-<h1>Algoritmo Simétrico</h1>
+    <h1>Algoritmo Simétrico</h1>
 
     <h2>Encriptado</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" action="{{ url_for('csimetrico') }}" enctype="multipart/form-data">
         <input type="hidden" name="modo" value="encriptacion">
-        <label for="archivo">Seleccionar archivo:</label>
-        <input id="archivo" type="file" name="archivo">
+        <label for="encriptado-archivo">Seleccionar archivo:</label>
+        <input id="encriptado-archivo" type="file" name="archivo">
         <br><br>
         <label>Algoritmo para la encriptación:</label>
-        <label for="des">AES</label>
-        <input type="radio" id="aes" name="algoritmo" value="AES">
-        <label for="algoritmo">DES</label>
-        <input type="radio" id="des" name="algoritmo" value="DES">
+        <label for="encriptado-aes">AES</label>
+        <input type="radio" id="encriptado-aes" name="algoritmo" value="AES">
+        <label for="encriptado-des">DES</label>
+        <input type="radio" id="encriptado-des" name="algoritmo" value="DES">
         <br><br>
         <label>Almacenamiento para la encriptación:</label>
-        <label for="local">Local</label>
-        <input type="radio" id="local" name="almacenamiento" value="local">
-        <label for="compartida">Compartida</label>
-        <input type="radio" id="compartida" name="almacenamiento" value="compartida">
+        <label for="encriptado-local">Local</label>
+        <input type="radio" id="encriptado-local" name="almacenamiento" value="local">
+        <label for="encriptado-compartida">Compartida</label>
+        <input type="radio" id="encriptado-compartida" name="almacenamiento" value="compartida">
         <br><br>
-        <input type="submit" name="encriptar" value="Encriptar">
+        <input type="submit" name="encriptar" value="Encriptar" onclick="abrirExploradorArchivos()">
     </form>
 
     <h2>Desencriptado</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" action="{{ url_for('csimetrico') }}">
         <input type="hidden" name="modo" value="desencriptacion">
-        <label for="archivo">Seleccionar archivo encriptado:</label>
-        <input id="archivo" type="file" name="archivo"><br><br>
-        <label for="clave">Seleccionar archivo clave simétrica:</label>
-        <input id="clave" type="file" name="clave">
+        <label for="desencriptado-archivo">Seleccionar archivo encriptado:</label>
+        <input id="desencriptado-archivo" type="file" name="archivo"><br><br>
+        <label for="desencriptado-clave">Seleccionar archivo clave simétrica:</label>
+        <input id="desencriptado-clave" type="file" name="clave">
         <br><br>
         <label>Algoritmo para la desencriptación:</label>
-        <label for="des">AES</label>
-        <input type="radio" id="aes" name="algoritmo" value="AES">
-        <label for="algoritmo">DES</label>
-        <input type="radio" id="des" name="algoritmo" value="DES">
+        <label for="desencriptado-aes">AES</label>
+        <input type="radio" id="desencriptado-aes" name="algoritmo" value="AES">
+        <label for="desencriptado-des">DES</label>
+        <input type="radio" id="desencriptado-des" name="algoritmo" value="DES">
         <br><br>
         <input type="submit" name="desencriptar" value="Desencriptar">
     </form>
 
-    <!-- Desde aquí lanzará los errores o éxito que se produzcan en la introducción de datos  -->
-    {% if encrypted_message %}
-        
-    {% endif %}
+    <script>
+        function abrirExploradorArchivos() {
+            var inputElement = document.createElement('input');
+            inputElement.type = 'file';
+            inputElement.style.display = 'none';
+            document.body.appendChild(inputElement);
 
-    <!-- Desde aquí lanzará los errores o éxito en el proceso de encriptación  -->
-    {% if encrypted_message %}
-        
+            inputElement.onchange = function () {
+                console.log('Archivo seleccionado:', inputElement.files[0]);
+                document.body.removeChild(inputElement);
+            };
+
+            inputElement.click();
+        }
+    </script>
+
+    <!-- Desde aquí lanzará los errores o éxito que se produzcan en la introducción de datos  -->
+    {% if result %}
+        <p>{{ result }}</p>
     {% endif %}
 {% endblock %}
+

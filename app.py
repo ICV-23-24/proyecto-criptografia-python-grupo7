@@ -1,57 +1,74 @@
 ###################
 #####LIBRERÍAS#####
 ###################
-from flask import Flask, render_template, request
-# FUNCIONES
+import os
+from flask import Flask, render_template, request, redirect, url_for
 import funciones.functions as f
 import funciones.functions_samba as fsmb
 import funciones.functions_flask as fflask
 
 app = Flask(__name__)
 
-# INICIO
-@app.route("/", methods=['GET','POST'] )
+# Ruta principal
+@app.route("/", methods=['GET', 'POST'])
 def home():
-    if request.method=='POST': # El usuario termina la sesión
-        fflask.borrar_credencial() # Borrar la credencial y archivos de la sesión
+    if request.method == 'POST':
+        fflask.borrar_credencial()
     return render_template("home.html")
 
-# ALGORITMO SIMÉTRICO
-@app.route("/csimetrico/", methods=['GET','POST'])
+# Ruta para el algoritmo simétrico
+@app.route("/csimetrico/", methods=['GET', 'POST'])
 def csimetrico():
-    if request.method == 'POST': # El usuario envía una solicitud de encriptación o desencriptación
-        # Traer del html los datos introducidos por el usuario a variables
-        archivo=request.files['archivo'] # Archivo a cifrar
-        algoritmo=request.form['algoritmo'] # Algortimo con el que se va a encriptar o desencriptar
-        modo=request.form['modo'] # Objetivo (encriptar o desencriptar)
+    if request.method == 'POST':
+        archivo = request.files['archivo']
+        algoritmo = request.form['algoritmo']
+        modo = request.form['modo']
 
-        # Encriptado
-        if modo=='encriptar': # Se inicia la encriptacion
-            almacenamiento=request.form['almacenamiento'] # Donde se almacena el resultado
-            
-            # Algoritmo
-            if algoritmo=='AES': # Se produce la encriptación simétrica con AES
-                return render_template("csimetrico.html")
-            elif algoritmo=='DES': # Se produce la encriptación simétrica con DES
-                return render_template("csimetrico.html")
+        # Lógica para el encriptado
+        if modo == 'encriptacion':
+            almacenamiento = request.form['almacenamiento']
+
+            if algoritmo == 'AES':
+                key = f.generate_random_key()
+                iv = f.generate_random_iv()
+
+                # Solicitar al usuario la carpeta de destino y encriptar el archivo
+                output_folder = f.open_directory_dialog("Selecciona la carpeta de destino para el archivo cifrado")
+                f.encrypt_file(archivo, key, iv, output_folder)
+
+                return render_template("csimetrico.html", result="Operación de encriptación exitosa")
+
+            elif algoritmo == 'DES':
+                # Lógica para DES
+                pass  # Debes proporcionar la lógica para DES aquí
 
             # Almacenamiento
-            if almacenamiento=='local': # Se almacena los resultados de la encriptación en local
-                return render_template("csimetrico.html")
-            elif almacenamiento=='compartida': # Se almacena los resultados de la encriptación en remoto
-                return render_template("csimetrico.html")
+            if almacenamiento == 'local':
+                # Lógica para almacenamiento local
+                pass  # Debes proporcionar la lógica para almacenamiento local aquí
+            elif almacenamiento == 'compartida':
+                # Lógica para almacenamiento compartido
+                pass  # Debes proporcionar la lógica para almacenamiento compartido aquí
             
-        # Desencriptado
-        if modo=='desencriptar': # Se inicia la desencriptación
-            clave=request.files['clave'] # Archivo con la clave simétrica
+        # Lógica para desencriptado
+        elif modo == 'desencriptar':
+            clave = request.files['clave']
 
-            # Algoritmo
-            if algoritmo=='AES': # Se produce la desencriptación simétrica con AES
-                return render_template("csimetrico.html")
-            elif algoritmo=='DES': # Se produce la desencriptación simétrica con DES
-                return render_template("csimetrico.html")
+            if algoritmo == 'AES':
+                key = f.load_key(clave)
+                iv = f.generate_random_iv()
+                decrypted_data = f.decrypt_file(archivo, key, iv)
+
+                # Solicitar al usuario la carpeta de destino y guardar el archivo descifrado
+                output_folder = f.open_directory_dialog("Selecciona la carpeta de destino para el archivo descifrado")
+                f.save_to_file(decrypted_data, os.path.join(output_folder, "archivo_descifrado.txt"))
+
+                return render_template("csimetrico.html", result="Operación de desencriptación exitosa")
 
     return render_template("csimetrico.html")
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # ALGORITMO ASIMÉTRICO
 @app.route("/casimetrico/")
