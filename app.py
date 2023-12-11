@@ -1,6 +1,8 @@
 ###################
 #####LIBRERÍAS#####
 ###################
+# app.py
+
 import os
 from flask import Flask, render_template, request, redirect, url_for
 import funciones.functions as f
@@ -16,7 +18,6 @@ def home():
         fflask.borrar_credencial()
     return render_template("home.html")
 
-# Ruta para el algoritmo simétrico
 @app.route("/csimetrico/", methods=['GET', 'POST'])
 def csimetrico():
     if request.method == 'POST':
@@ -49,15 +50,18 @@ def csimetrico():
             elif almacenamiento == 'compartida':
                 # Lógica para almacenamiento compartido
                 pass  # Debes proporcionar la lógica para almacenamiento compartido aquí
-            
-        # Lógica para desencriptado
-        elif modo == 'desencriptar':
-            clave = request.files['clave']
 
+        # Lógica para desencriptado
+        elif modo == 'desencriptacion':
+            clave = request.files['clave']
             if algoritmo == 'AES':
                 key = f.load_key(clave)
                 iv = f.generate_random_iv()
+
+                print(f"Decrypted Key: {key.decode()}")
                 decrypted_data = f.decrypt_file(archivo, key, iv)
+
+                print(decrypted_data)
 
                 # Solicitar al usuario la carpeta de destino y guardar el archivo descifrado
                 output_folder = f.open_directory_dialog("Selecciona la carpeta de destino para el archivo descifrado")
@@ -69,6 +73,8 @@ def csimetrico():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
 # ALGORITMO ASIMÉTRICO
 @app.route("/casimetrico/")

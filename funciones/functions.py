@@ -1,3 +1,5 @@
+# functions.py
+
 import os
 import random
 import string
@@ -12,57 +14,27 @@ def generate_random_key(length=16):
 def generate_random_iv(length=16):
     return os.urandom(length)
 
-def encrypt_file(uploaded_file, key, iv, output_folder):
-    # Verificar si se proporcionó un archivo
-    if not uploaded_file:
-        return b''  # Devolver una cadena vacía si no hay archivo
-
-    plaintext = uploaded_file.read()
+def encrypt_file(file_path, key, iv):
+    with open(file_path, 'rb') as file:
+        plaintext = file.read()
 
     cipher = Cipher(algorithms.AES(key.encode()), modes.CFB8(iv), backend=default_backend())
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(plaintext) + encryptor.finalize()
 
-    # Guardar el archivo cifrado en la carpeta especificada
-    encrypted_file_path = os.path.join(output_folder, "archivo_cifrado.txt")
-    save_to_file(ciphertext, encrypted_file_path)
-
-    print(f"El archivo cifrado se ha guardado en {encrypted_file_path}")
+    return ciphertext
 
 def save_to_file(data, file_path):
     with open(file_path, 'wb') as file:
         file.write(data)
 
-def generate_and_save_key(output_folder):
-    # Generar una clave aleatoria y guardarla en la carpeta seleccionada
-    key = generate_random_key()
-    key_file_path = os.path.join(output_folder, "clave.txt")
-    save_to_file(key.encode(), key_file_path)
-
-    print(f"La clave se ha guardado en {key_file_path}")
-
-    return key
-
-def encrypt_message(message, key, iv):
-    cipher = Cipher(algorithms.AES(key.encode()), modes.CFB8(iv), backend=default_backend())
-    encryptor = cipher.encryptor()
-    ciphertext = encryptor.update(message.encode()) + encryptor.finalize()
-    return ciphertext
-
-def decrypt_message(ciphertext, key, iv):
-    cipher = Cipher(algorithms.AES(key.encode()), modes.CFB8(iv), backend=default_backend())
-    decryptor = cipher.decryptor()
-    plaintext = decryptor.update(ciphertext) + decryptor.finalize()
-    return plaintext.decode()
-
-def load_key(key_file_path):
-    with open(key_file_path, 'rb') as key_file:
-        return key_file.read()
+def load_key(key_file):
+    key_data = key_file.read()
+    return key_data
 
 def decrypt_file(uploaded_file, key, iv):
-    # Verificar si se proporcionó un archivo
     if not uploaded_file:
-        return b''  # Devolver una cadena vacía si no hay archivo
+        return b''
 
     ciphertext = uploaded_file.read()
 
@@ -72,18 +44,30 @@ def decrypt_file(uploaded_file, key, iv):
 
     return plaintext
 
-def open_file_dialog(title, filetypes):
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.askopenfilename(title=title, filetypes=filetypes)
-    return file_path
-
 def open_directory_dialog(title):
     root = tk.Tk()
     root.withdraw()
-    folder_path = filedialog.askdirectory(title=title)
 
-    # Generar y guardar la clave en la carpeta seleccionada
-    generate_and_save_key(folder_path)
-    
+    folder_path = None
+
+    def ask_directory():
+        nonlocal folder_path
+        folder_path = filedialog.askdirectory(title=title)
+        root.quit()
+
+    root.after(0, ask_directory)
+    root.mainloop()
+
+    if folder_path is not None:
+        generate_and_save_key(folder_path)
+
     return folder_path
+
+def generate_and_save_key(output_folder):
+    key = generate_random_key()
+    key_file_path = os.path.join(output_folder, "clave.txt")
+    save_to_file(key.encode(), key_file_path)
+
+    print(f"La clave se ha guardado en {key_file_path}")
+
+    return key
