@@ -21,9 +21,9 @@ def home():
 @app.route("/csimetrico/", methods=['GET', 'POST'])
 def csimetrico():
     if request.method == 'POST':
+        modo = request.form['modo']
         archivo = request.files['archivo']
         algoritmo = request.form['algoritmo']
-        modo = request.form['modo']
 
         # Lógica para el encriptado
         if modo == 'encriptacion':
@@ -73,8 +73,6 @@ def csimetrico():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
 
 # ALGORITMO ASIMÉTRICO
 @app.route("/casimetrico/")

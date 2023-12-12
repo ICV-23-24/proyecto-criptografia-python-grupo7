@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 import tkinter as tk
 from tkinter import filedialog
+from werkzeug.utils import secure_filename
 
 def generate_random_key(length=16):
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
@@ -14,15 +15,28 @@ def generate_random_key(length=16):
 def generate_random_iv(length=16):
     return os.urandom(length)
 
-def encrypt_file(file_path, key, iv):
-    with open(file_path, 'rb') as file:
-        plaintext = file.read()
+def encrypt_file(uploaded_file, key, iv, output_folder):
+    # Verifica si se ha proporcionado un archivo
+    if not uploaded_file:
+        return None
 
+    # Genera un nombre de archivo seguro y único
+    file_name = secure_filename(uploaded_file.filename)
+    
+    # Ruta completa del archivo de salida cifrado
+    encrypted_file_path = os.path.join(output_folder, f"encrypted_{file_name}")
+
+    # Lee el contenido del archivo cargado y realiza el cifrado
+    plaintext = uploaded_file.read()
     cipher = Cipher(algorithms.AES(key.encode()), modes.CFB8(iv), backend=default_backend())
     encryptor = cipher.encryptor()
     ciphertext = encryptor.update(plaintext) + encryptor.finalize()
 
-    return ciphertext
+    # Guarda el archivo cifrado en la carpeta de salida
+    with open(encrypted_file_path, 'wb') as encrypted_file:
+        encrypted_file.write(ciphertext)
+
+    return encrypted_file_path
 
 def save_to_file(data, file_path):
     with open(file_path, 'wb') as file:

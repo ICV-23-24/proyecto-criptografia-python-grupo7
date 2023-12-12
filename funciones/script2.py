@@ -49,7 +49,7 @@ def main():
 
     # Generar un vector de inicialización aleatorio de 16 bytes
     iv = generate_random_iv()
-
+    
     # Cifrar el archivo seleccionado
     encrypted_data = encrypt_file(file_path, encryption_key, iv)
 
